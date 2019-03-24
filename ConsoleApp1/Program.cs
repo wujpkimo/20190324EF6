@@ -16,7 +16,29 @@ namespace ConsoleApp1
             var db = new ContosoUniversity190324Entities();
 
             //CCourseWithRelation2(db);
-            AsNoTracking(db);
+            //AsNoTracking(db);
+
+            Attach(db);
+        }
+
+        private static void Attach(ContosoUniversity190324Entities db)
+        {
+            var dept = new Department()
+            {
+                DepartmentID = 17,
+                Name = "酷奇資訊",
+                Budget = 18000,
+                StartDate = new DateTime(2008, 1, 1, 0, 0, 0)
+            };
+
+            db.Departments.Attach(dept);
+            // 狀態變為unchanged
+
+            //db.SaveChanges();
+            // >> 這時候不會變更
+
+            dept.Name = "123";
+            db.SaveChanges();
         }
 
         private static void AsNoTracking(ContosoUniversity190324Entities db)
