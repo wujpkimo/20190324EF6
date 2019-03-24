@@ -13,7 +13,7 @@ namespace ConsoleApp1
         {
             var db = new ContosoUniversity190324Entities();
 
-            SelectCourWithRelation1(db);
+            CRUDCourWithRelation1(db);
         }
 
         private static void SelectCourWithRelation(ContosoUniversity190324Entities db)
@@ -71,6 +71,54 @@ namespace ConsoleApp1
                     Console.Write('\t' + item1.Title + '\n');
                 }
             }
+        }
+
+        private static void CRUDCourWithRelation1(ContosoUniversity190324Entities db)
+        {
+            // 顯示程式碼
+            db.Database.Log = (msg) => Console.WriteLine(msg);
+
+            Department dept = new Department
+            {
+                Name = "TEST",
+                Budget = 100,
+                StartDate = DateTime.UtcNow,
+            };
+
+            dept.Courses.Add(new Course
+            {
+                Title = "Test 課程1",
+                Credits = 1,
+                Department = dept
+            });
+
+            dept.Courses.Add(new Course
+            {
+                Title = "Test 課程2",
+                Credits = 2,
+                Department = dept
+            });
+            db.Departments.Add(dept);
+            db.SaveChanges();
+
+            Console.WriteLine("產生部門id: " + dept.DepartmentID);
+            Console.WriteLine("產生部門名稱: " + dept.Name);
+
+            foreach (var c in dept.Courses)
+            {
+                Console.WriteLine("CourseId: " + c.CourseID.ToString());
+            }
+
+            var data = db.Departments.Find(dept.DepartmentID);
+
+            data.Name = "Adjust Test";
+            db.SaveChanges();
+
+            Console.WriteLine("部門名稱調整為: " + data.Name);
+
+            //db.Departments.Remove(data);
+            //db.SaveChanges();
+            //Console.WriteLine("部門 " + data.Name + " 已刪除");
         }
     }
 }
