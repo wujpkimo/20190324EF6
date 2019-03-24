@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,7 +15,7 @@ namespace ConsoleApp1
         {
             var db = new ContosoUniversity190324Entities();
 
-            CRUDCourWithRelation1(db);
+            CCourseWithRelation(db);
         }
 
         private static void SelectCourWithRelation(ContosoUniversity190324Entities db)
@@ -73,6 +75,44 @@ namespace ConsoleApp1
             }
         }
 
+        private static void SelectCourWithRelation2(ContosoUniversity190324Entities db)
+        {
+            // 顯示程式碼
+            db.Database.Log = (msg) => Console.WriteLine(msg);
+
+            // 最好是都取消lazyloading
+            db.Configuration.LazyLoadingEnabled = false;
+            foreach (var item in db.Courses.Include(p => p.Department).Select(p => new { CourseTitle = p.Title, DeptTitle = p.Department.Name }))
+            {
+                Console.WriteLine(item.CourseTitle);
+
+                Console.Write('\t' + item.DeptTitle + '\n');
+            }
+        }
+
+        private static void SelectCourWithRelation3(ContosoUniversity190324Entities db)
+        {
+            // 顯示程式碼
+            db.Database.Log = (msg) => Console.WriteLine(msg);
+
+            var data = from p in db.Courses.Include(p => p.Department)
+                       select new
+                       {
+                           CourseTitle = p.Title,
+                           DeptTitle = p.Department.Name
+                       };
+
+            // 最好是都取消lazyloading
+            db.Configuration.LazyLoadingEnabled = false;
+            db.Configuration.ProxyCreationEnabled = false;
+            foreach (var item in data)
+            {
+                Console.WriteLine(item.CourseTitle);
+
+                Console.Write('\t' + item.DeptTitle + '\n');
+            }
+        }
+
         private static void CRUDCourWithRelation1(ContosoUniversity190324Entities db)
         {
             // 顯示程式碼
@@ -120,6 +160,41 @@ namespace ConsoleApp1
             //db.Departments.Remove(data);
             //db.SaveChanges();
             //Console.WriteLine("部門 " + data.Name + " 已刪除");
+        }
+
+        private static void CCourseWithRelation(ContosoUniversity190324Entities db)
+        {
+            // 顯示程式碼
+            db.Database.Log = (msg) => Console.WriteLine(msg);
+
+            var course = db.Courses.Find(1);
+
+            course.Instructors.Add(new Person()
+            {
+                FirstName = "will",
+                LastName = "Huang",
+                HireDate = DateTime.Now,
+                //Discriminator = "XXX"
+            });
+
+            // enity錯誤處理
+            try
+            {
+                db.SaveChanges();
+            }
+            catch (DbEntityValidationException e)
+            {
+                var sb = new StringBuilder();
+                foreach (var ex in e.EntityValidationErrors)
+                {
+                    foreach (var ve in ex.ValidationErrors)
+                    {
+                        sb.AppendLine($"欄位: {ve.PropertyName} 發生錯誤: {ve.ErrorMessage} ");
+                    }
+                }
+                //Console.WriteLine(e.EntityValidationErrors);
+                throw new Exception(sb.ToString(), e);
+            }
         }
     }
 }

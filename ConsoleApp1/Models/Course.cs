@@ -18,7 +18,7 @@ namespace ConsoleApp1.Models
         public Course()
         {
             this.Enrollments = new HashSet<Enrollment>();
-            this.People = new HashSet<Person>();
+            this.Instructors = new HashSet<Person>();
         }
     
         public int CourseID { get; set; }
@@ -30,6 +30,6 @@ namespace ConsoleApp1.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Enrollment> Enrollments { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Person> People { get; set; }
+        public virtual ICollection<Person> Instructors { get; set; }
     }
 }
