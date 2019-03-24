@@ -13,6 +13,11 @@ namespace ConsoleApp1
         {
             var db = new ContosoUniversity190324Entities();
 
+            SelectCourWithRelation1(db);
+        }
+
+        private static void SelectCourWithRelation(ContosoUniversity190324Entities db)
+        {
             // 顯示程式碼
             db.Database.Log = (msg) => Console.WriteLine(msg);
 
@@ -21,6 +26,9 @@ namespace ConsoleApp1
 
             //var c = db.Courses.Where(p => p.Title.StartsWith("Git")).ToList();
             //var c = db.Courses.Where(p => p.Title.EndsWith("Git")).ToList();
+
+            // 只選擇單一欄位跑SQL by Linq
+            //var c = db.Courses.Where(p => p.Title.StartsWith("Git")).Select(p => new { p.Title });
 
             // 只選擇單一欄位跑SQL
             //var c = from p in db.Courses
@@ -41,7 +49,27 @@ namespace ConsoleApp1
 
             foreach (var item in c)
             {
-                Console.WriteLine(item.Title);
+                //Console.WriteLine(item.Title);
+                Console.WriteLine(item.Department.Name + '\t' + item.Title);
+            }
+        }
+
+        private static void SelectCourWithRelation1(ContosoUniversity190324Entities db)
+        {
+            // 顯示程式碼
+            db.Database.Log = (msg) => Console.WriteLine(msg);
+
+            var dept = from p in db.Departments
+                       select p;
+
+            foreach (var item in dept)
+            {
+                Console.WriteLine(item.Name);
+
+                foreach (var item1 in item.Courses)
+                {
+                    Console.Write('\t' + item1.Title + '\n');
+                }
             }
         }
     }
