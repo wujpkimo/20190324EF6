@@ -15,7 +15,18 @@ namespace ConsoleApp1
         {
             var db = new ContosoUniversity190324Entities();
 
-            CCourseWithRelation(db);
+            //CCourseWithRelation2(db);
+            AsNoTracking(db);
+        }
+
+        private static void AsNoTracking(ContosoUniversity190324Entities db)
+        {
+            var data = db.Courses.AsNoTracking();
+
+            foreach (var item in data)
+            {
+                Console.WriteLine(item.Title);
+            }
         }
 
         private static void SelectCourWithRelation(ContosoUniversity190324Entities db)
@@ -174,9 +185,59 @@ namespace ConsoleApp1
                 FirstName = "will",
                 LastName = "Huang",
                 HireDate = DateTime.Now,
-                //Discriminator = "XXX"
+                Discriminator = "XXX"
             });
 
+            // enity錯誤處理
+            try
+            {
+                db.SaveChanges();
+            }
+            catch (DbEntityValidationException e)
+            {
+                var sb = new StringBuilder();
+                foreach (var ex in e.EntityValidationErrors)
+                {
+                    foreach (var ve in ex.ValidationErrors)
+                    {
+                        sb.AppendLine($"欄位: {ve.PropertyName} 發生錯誤: {ve.ErrorMessage} ");
+                    }
+                }
+                //Console.WriteLine(e.EntityValidationErrors);
+                throw new Exception(sb.ToString(), e);
+            }
+        }
+
+        private static void CCourseWithRelation2(ContosoUniversity190324Entities db)
+        {
+            // 顯示程式碼
+            db.Database.Log = (msg) => Console.WriteLine(msg);
+
+            var course = new Course()
+            {
+                Credits = 1,
+                Title = "TestClass"
+            };
+
+            course.DepartmentID = 4;
+
+            course.Instructors.Add(new Person()
+            {
+                FirstName = "will",
+                LastName = "Huang",
+                HireDate = DateTime.Now,
+                Discriminator = "XXX"
+            });
+
+            course.Instructors.Add(new Person()
+            {
+                FirstName = "WJP",
+                LastName = "W",
+                HireDate = DateTime.Now,
+                Discriminator = "XX2"
+            });
+
+            db.Courses.Add(course);
             // enity錯誤處理
             try
             {
