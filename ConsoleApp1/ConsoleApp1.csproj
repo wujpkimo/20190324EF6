@@ -94,6 +94,7 @@
     <None Include="Models\ContonsoUniversity.edmx.diagram">
       <DependentUpon>ContonsoUniversity.edmx</DependentUpon>
     </None>
+    <Compile Include="Models\ContosoUniversity190324Entities.partial.cs" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />

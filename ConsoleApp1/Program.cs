@@ -19,7 +19,24 @@ namespace ConsoleApp1
             //AsNoTracking(db);
             //Attach(db);
 
-            Entry(db);
+            //Entry(db);
+
+            partialEntryEdit(db);
+        }
+
+        private static void partialEntryEdit(ContosoUniversity190324Entities db)
+        {
+            db.Database.Log = (msg) => Console.WriteLine(msg);
+
+            var dept = new Department()
+            {
+                Name = "酷奇資訊",
+                Budget = 18000,
+                StartDate = new DateTime(2008, 1, 1, 0, 0, 0)
+            };
+
+            db.Departments.Add(dept);
+            db.SaveChanges();
         }
 
         private static void Entry(ContosoUniversity190324Entities db)
