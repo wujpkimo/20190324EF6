@@ -17,8 +17,35 @@ namespace ConsoleApp1
 
             //CCourseWithRelation2(db);
             //AsNoTracking(db);
+            //Attach(db);
 
-            Attach(db);
+            Entry(db);
+        }
+
+        private static void Entry(ContosoUniversity190324Entities db)
+        {
+            db.Database.Log = (msg) => Console.WriteLine(msg);
+
+            //var dept = new Department()
+            //{
+            //    DepartmentID = 17,
+            //    Name = "酷奇資訊",
+            //    Budget = 18000,
+            //    StartDate = new DateTime(2008, 1, 1, 0, 0, 0)
+            //};
+
+            //var entry = db.Entry(dept);
+
+            // ---複製並修改
+            var dept = db.Departments.Find(1);
+
+            dept.Name = "修改後名稱";
+            var entry = db.Entry(dept);
+
+            entry.State = EntityState.Added;
+            db.SaveChanges();
+
+            Console.WriteLine(entry.State);
         }
 
         private static void Attach(ContosoUniversity190324Entities db)
