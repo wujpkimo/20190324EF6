@@ -82,7 +82,8 @@ namespace ConsoleApp1
             {
                 Name = "TEST",
                 Budget = 100,
-                StartDate = DateTime.UtcNow,
+                StartDate = DateTime.Now,
+                ModifyOn = DateTime.Now
             };
 
             dept.Courses.Add(new Course
