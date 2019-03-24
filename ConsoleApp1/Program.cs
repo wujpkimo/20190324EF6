@@ -21,7 +21,22 @@ namespace ConsoleApp1
 
             //Entry(db);
 
-            partialEntryEdit(db);
+            //partialEntryEdit(db);
+
+            ConcurrencyModel(db);
+        }
+
+        private static void ConcurrencyModel(ContosoUniversity190324Entities db)
+        {
+            db.Database.Log = (msg) => Console.WriteLine(msg);
+
+            var dept = db.Departments.Find(1);
+
+            dept.Budget++;
+
+            Console.ReadLine();
+
+            db.SaveChanges();
         }
 
         private static void partialEntryEdit(ContosoUniversity190324Entities db)
